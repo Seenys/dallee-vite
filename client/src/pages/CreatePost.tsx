@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FormField, Loader } from "../components";
+import { preview } from "../assets";
+import { getRandomPrompt } from "../utils";
 
 export const CreatePost = () => {
   const navigate = useNavigate();
@@ -12,13 +14,19 @@ export const CreatePost = () => {
   const [generateingImage, setGeneratingImage] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const generateImage = async () => {};
   const handleSubmit = () => {
     console.log("formState", formState);
   };
 
-  const handleChange = (e: any) => {};
+  const handleChange = (e: any) => {
+    setFormState({ ...formState, [e.target.name]: e.target.value });
+  };
 
-  const handleSurpriseMe = () => {};
+  const handleSurpriseMe = () => {
+    const randomPrompt = getRandomPrompt(formState.prompt);
+    setFormState({ ...formState, prompt: randomPrompt });
+  };
 
   return (
     <section className="max-w-7xl mx-auto">
@@ -51,10 +59,10 @@ export const CreatePost = () => {
             handleSurpriseMe={handleSurpriseMe}
           />
           <div className="relative bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-64 p-3 h-64 flex justify-center intems-center">
-            {form.photo ? (
+            {formState.photo ? (
               <img
-                src={form.photo}
-                alt={form.prompt}
+                src={formState.photo}
+                alt={formState.prompt}
                 className="w-full h-full object-contain"
               />
             ) : (
@@ -70,6 +78,27 @@ export const CreatePost = () => {
               </div>
             )}
           </div>
+        </div>
+        <div className="mt-5 flex gap-5">
+          <button
+            type="button"
+            onClick={generateImage}
+            className="text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
+          >
+            {generateingImage ? "Generating Image..." : "Generate Image"}
+          </button>
+        </div>
+        <div className="mt-10">
+          <p className="mt-2 text-[#666e75] text-[14px]">
+            Once you have created the image, you can share it with the world by
+            clicking the button below.
+            <button
+              type="submit"
+              className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
+            >
+              {loading ? "Sharing..." : "Share with the world"}
+            </button>
+          </p>
         </div>
       </form>
     </section>
