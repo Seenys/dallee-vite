@@ -39,8 +39,30 @@ export const CreatePost = () => {
       setGeneratingImage(false);
     }
   };
-  const handleSubmit = () => {
-    console.log("formState", formState);
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    if (formState.prompt && formState.photo) {
+      setLoading(true);
+      try {
+        const response = await fetch("http://localhost:8080/api/v1/posts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...formState }),
+        });
+        await response.json();
+        navigate("/");
+      } catch (e) {
+        console.log(e);
+        alert(e);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      alert("Please generate an image first");
+    }
   };
 
   const handleChange = (e: any) => {
@@ -74,7 +96,7 @@ export const CreatePost = () => {
           />
           <FormField
             labelName="Pronpt"
-            name="pronpt"
+            name="prompt"
             value={formState.prompt}
             type="text"
             placeholder="A man standing in front of a stargate to another dimension"
